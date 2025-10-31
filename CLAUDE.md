@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## IMPORTANT: Documentation-First Approach
+
+**ALWAYS refer to the relevant documentation files within the `/docs` directory BEFORE generating any code.**
+
+When working on any task:
+1. **Check `/docs` directory first** - Look for relevant documentation files that cover the technology, pattern, or feature you're implementing
+2. **Read the documentation thoroughly** - Understand the recommended approach, best practices, and examples provided
+3. **Follow the documented patterns** - Use the exact patterns, conventions, and examples from the docs
+4. **Never guess or assume** - If documentation exists for a feature, use it as the source of truth
+
+The `/docs` directory contains authoritative guidance for this project. All code generation should be based on these documented standards to ensure consistency and correctness.
+
 ## Project Overview
 
 This is a Next.js 16 application using the App Router architecture with TypeScript and Tailwind CSS v4. The project uses React 19.2.0 and follows modern Next.js conventions.
