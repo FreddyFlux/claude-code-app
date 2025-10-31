@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,12 +31,67 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider
+      appearance={{
+        variables: {
+          colorPrimary: "#171717",
+          colorBackground: "#ffffff",
+          colorText: "#171717",
+          colorTextSecondary: "#52525b",
+          colorInputBackground: "#ffffff",
+          colorInputText: "#171717",
+          fontFamily: "var(--font-geist-sans)",
+          fontFamilyButtons: "var(--font-geist-sans)",
+          borderRadius: "0.5rem",
+        },
+        elements: {
+          card: "shadow-lg border border-zinc-200 dark:border-zinc-800",
+          headerTitle: "text-zinc-900 dark:text-zinc-100",
+          headerSubtitle: "text-zinc-600 dark:text-zinc-400",
+          formButtonPrimary:
+            "bg-zinc-900 hover:bg-zinc-700 text-white dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300",
+          formButtonReset:
+            "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100",
+          footerActionLink:
+            "text-zinc-900 hover:text-zinc-700 dark:text-zinc-100 dark:hover:text-zinc-300",
+          identityPreviewText: "text-zinc-900 dark:text-zinc-100",
+          identityPreviewEditButton:
+            "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100",
+          formFieldLabel: "text-zinc-700 dark:text-zinc-300",
+          formFieldInput:
+            "border-zinc-300 dark:border-zinc-700 focus:border-zinc-900 dark:focus:border-zinc-100",
+          dividerLine: "bg-zinc-200 dark:bg-zinc-800",
+          dividerText: "text-zinc-500 dark:text-zinc-500",
+        },
+      }}
+    >
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <header className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800">
+            <div className="text-lg font-semibold">My App</div>
+            <div className="flex items-center gap-4">
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="px-4 py-2 text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="px-4 py-2 text-sm font-medium text-white bg-zinc-900 rounded-lg hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300">
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </div>
+          </header>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
