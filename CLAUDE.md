@@ -18,6 +18,110 @@ The `/docs` directory contains authoritative guidance for this project. All code
 
 This is a Next.js 16 application using the App Router architecture with TypeScript and Tailwind CSS v4. The project uses React 19.2.0 and follows modern Next.js conventions.
 
+## CRITICAL: Next.js 15+ Modern Patterns
+
+**This project uses Next.js 15+ and MUST follow modern async patterns. Never use deprecated or outdated Next.js features.**
+
+### Modern Async APIs (Next.js 15+)
+
+The following APIs are now **async** and must be awaited:
+
+#### 1. **searchParams** (Page Props)
+```typescript
+// ✅ CORRECT - Next.js 15+
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function Page({ searchParams }: PageProps) {
+  const params = await searchParams;  // Must await
+  const query = params.q;
+}
+
+// ❌ WRONG - Will throw error in Next.js 15+
+interface PageProps {
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default async function Page({ searchParams }: PageProps) {
+  const query = searchParams.q;  // ERROR: searchParams is a Promise
+}
+```
+
+#### 2. **params** (Dynamic Route Params)
+```typescript
+// ✅ CORRECT - Next.js 15+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function Page({ params }: PageProps) {
+  const { slug } = await params;  // Must await
+}
+
+// ❌ WRONG - Will throw error in Next.js 15+
+interface PageProps {
+  params: { slug: string };
+}
+
+export default async function Page({ params }: PageProps) {
+  const { slug } = params;  // ERROR: params is a Promise
+}
+```
+
+#### 3. **cookies()** and **headers()**
+These APIs from `next/headers` are now async:
+
+```typescript
+// ✅ CORRECT - Next.js 15+
+import { cookies, headers } from 'next/headers';
+
+export async function GET() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token');
+
+  const headersList = await headers();
+  const userAgent = headersList.get('user-agent');
+}
+
+// ❌ WRONG - Will throw error in Next.js 15+
+import { cookies, headers } from 'next/headers';
+
+export async function GET() {
+  const cookieStore = cookies();  // ERROR: must await
+  const headersList = headers();  // ERROR: must await
+}
+```
+
+### Date and Timezone Handling
+
+**Always use UTC for date comparisons** when working with database timestamps:
+
+```typescript
+// ✅ CORRECT - Use UTC hours
+const startOfDay = new Date(date);
+startOfDay.setUTCHours(0, 0, 0, 0);
+
+const endOfDay = new Date(date);
+endOfDay.setUTCHours(23, 59, 59, 999);
+
+// ❌ WRONG - Local timezone will cause mismatches
+const startOfDay = new Date(date);
+startOfDay.setHours(0, 0, 0, 0);  // Uses local timezone
+```
+
+### Key Principles
+
+1. **Always await async Next.js APIs** - `searchParams`, `params`, `cookies()`, `headers()`
+2. **Use UTC for date handling** - Prevents timezone-related bugs when comparing with database timestamps
+3. **Type correctly** - Mark props as `Promise<T>` when using Next.js 15+ async APIs
+4. **Check documentation** - When in doubt, verify the latest Next.js patterns in `/docs` or official Next.js documentation
+
+### References
+
+- See `/docs/troubleshooting-dashboard-data.md` for detailed examples of async searchParams
+- See `/docs/data-fetching.md` for database and date handling patterns
+
 ## Development Commands
 
 ```bash
