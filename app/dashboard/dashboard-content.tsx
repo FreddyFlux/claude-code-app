@@ -161,7 +161,11 @@ export function DashboardContent({ initialWorkouts, initialDate }: DashboardCont
                           <span>{getWorkoutCalories(workout)} cal</span>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => router.push(`/dashboard/workout/${workout.id}`)}
+                      >
                         View
                       </Button>
                     </div>

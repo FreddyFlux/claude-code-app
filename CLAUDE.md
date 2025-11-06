@@ -119,6 +119,7 @@ startOfDay.setHours(0, 0, 0, 0);  // Uses local timezone
 
 ### References
 
+- See `/docs/routing.md` for routing conventions and middleware-based route protection
 - See `/docs/troubleshooting-dashboard-data.md` for detailed examples of async searchParams
 - See `/docs/data-fetching.md` for database and date handling patterns
 
@@ -230,12 +231,22 @@ To modify Clerk styling:
 
 ## Routing in App Router
 
-Create new routes by adding folders with `page.tsx` files:
-- `app/about/page.tsx` → `/about` route
-- `app/blog/[slug]/page.tsx` → `/blog/:slug` dynamic route
-- `app/api/hello/route.ts` → `/api/hello` API endpoint
+**IMPORTANT: All authenticated application routes MUST be under the `/dashboard` path.**
 
-Special files:
+### Route Structure
+
+- `app/page.tsx` → `/` (public landing page)
+- `app/dashboard/page.tsx` → `/dashboard` (protected dashboard home)
+- `app/dashboard/workout/new/page.tsx` → `/dashboard/workout/new` (protected)
+- `app/dashboard/workout/[workoutId]/page.tsx` → `/dashboard/workout/:workoutId` (protected)
+- `app/api/hello/route.ts` → `/api/hello` (API endpoint)
+
+### Route Protection
+
+All `/dashboard/*` routes are protected via middleware. See `/docs/routing.md` for complete routing standards.
+
+### Special Files
+
 - `layout.tsx` - Shared UI that wraps child segments
 - `page.tsx` - Route's unique UI
 - `loading.tsx` - Loading UI for Suspense boundaries

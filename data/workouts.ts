@@ -130,6 +130,36 @@ export async function createWorkout(
 }
 
 /**
+ * Update an existing workout for a user
+ * @param userId - The authenticated user's ID from Clerk
+ * @param workoutId - The workout ID to update
+ * @param data - Workout data to update
+ * @returns The updated workout or null if not found/not authorized
+ */
+export async function updateWorkout(
+  userId: string,
+  workoutId: number,
+  data: {
+    name?: string;
+    startedAt?: Date;
+    status?: string;
+    durationSeconds?: number;
+  }
+) {
+  const result = await db
+    .update(workouts)
+    .set({
+      ...data,
+      updatedAt: new Date(),
+      completedAt: data.status === "completed" ? new Date() : undefined,
+    })
+    .where(and(eq(workouts.id, workoutId), eq(workouts.userId, userId)))
+    .returning();
+
+  return result[0] || null;
+}
+
+/**
  * Format workout duration from seconds to human-readable string
  * @param durationSeconds - Duration in seconds
  * @returns Formatted duration string (e.g., "45 min", "1h 30 min")
