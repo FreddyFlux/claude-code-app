@@ -15,6 +15,12 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(landingUrl);
   }
 
+  // Redirect authenticated users from homepage to dashboard
+  if (req.nextUrl.pathname === "/" && userId) {
+    const dashboardUrl = new URL("/dashboard", req.url);
+    return NextResponse.redirect(dashboardUrl);
+  }
+
   return NextResponse.next();
 });
 
